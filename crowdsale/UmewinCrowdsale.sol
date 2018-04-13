@@ -14,7 +14,7 @@ contract UmeToken is CappedToken
   string public desc = "UME token used in the Umewin ecosystem";
   string public symbol = "UME";
   uint8 public decimals = 18;
-  uint256 public constant INITIAL_SUPPLY = 100000000;
+  uint256 public constant amount = 200000000;
 
   function UmeToken() CappedToken(amount) public {
       owner = msg.sender;
