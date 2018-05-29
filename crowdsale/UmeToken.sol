@@ -19,8 +19,6 @@ contract UmeToken is CappedToken
 
     constructor() CappedToken(amount) public {
     }
-
-
 }
 
 
@@ -36,7 +34,7 @@ contract Crowdsale is Ownable {
     using SafeMath for uint256;
 
     // The token being sold
-    MintableToken public token;
+    UmeToken public token;
 
     bool paused = false;
 
@@ -65,6 +63,7 @@ contract Crowdsale is Ownable {
 
     constructor() public {
         token = createTokenContract();
+        // token.transferOwnership(msg.sender);
     }
 
     // fallback function can be used to buy tokens
@@ -96,10 +95,15 @@ contract Crowdsale is Ownable {
         return paused;
     }
 
+    function isBonusEnabled() public view returns (bool) {
+        return bonus;
+    }
+
+
     // creates the token to be sold.
     // override this method to have crowdsale of a specific mintable token.
-    function createTokenContract() internal returns (MintableToken) {
-        return new MintableToken();
+    function createTokenContract() internal returns (UmeToken) {
+        return new UmeToken();
     }
 
     // Override this method to have a way to add business logic to your crowdsale when buying
@@ -120,23 +124,30 @@ contract Crowdsale is Ownable {
         return !paused && nonZeroPurchase;
     }
 
-    function pause() public  onlyOwner returns(bool){
+    function pause() public  onlyOwner {
         paused = true;
-        return true;
     }
 
-    function unpause() public  onlyOwner returns (bool) {
+    function unpause() public  onlyOwner {
         paused = false;
-        return true;
     }
 
-
-    function applyBonus() public  onlyOwner {
+    function enableBonus() public  onlyOwner{
         bonus = true;
     }
 
-    function removeBonus() public  onlyOwner {
+    function disableBonus() public  onlyOwner{
         bonus = false;
     }
+
+    function transferTokenOwnership() public onlyOwner {
+        token.transferOwnership(msg.sender);
+    }
+
+    function mint(address beneficiary, uint256 tokens) public onlyOwner {
+        token.mint(beneficiary, tokens);
+    }
+
+
 
 }
